@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path"
@@ -10,6 +11,10 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 )
+
+// HCLParseError occurs when an error is encountered while parsing HCL.
+// It should not be logged to the console, as the error message will be printed by the HCL parser.
+var HCLParseError = errors.New("failed to parse config")
 
 func parseFiles(paths []string) (*Config, error) {
 	parser := hclparse.NewParser()
@@ -22,7 +27,7 @@ func parseFiles(paths []string) (*Config, error) {
 		wr := hcl.NewDiagnosticTextWriter(os.Stderr, parser.Files(), 80, true)
 		if diags.HasErrors() {
 			wr.WriteDiagnostics(diags)
-			return nil, diags
+			return nil, HCLParseError
 		}
 
 		hclFiles = append(hclFiles, hclFile)
@@ -36,7 +41,7 @@ func parseFiles(paths []string) (*Config, error) {
 	var configFile Config
 	if diags := gohcl.DecodeBody(mergedFile, nil, &configFile); diags.HasErrors() {
 		wr.WriteDiagnostics(diags)
-		return nil, diags
+		return nil, HCLParseError
 	}
 
 	populateDefaults(&configFile)

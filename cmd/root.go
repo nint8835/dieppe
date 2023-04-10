@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -58,7 +59,10 @@ func initConfig() {
 	var err error
 	cfg, err = config.Parse(cfgPath)
 	if err != nil {
-		slog.Error("failed to parse config", "err", err)
+		if !errors.Is(err, config.HCLParseError) {
+			slog.Error("failed to parse config", "err", err)
+		}
+
 		os.Exit(1)
 	}
 }
