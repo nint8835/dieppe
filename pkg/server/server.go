@@ -3,6 +3,8 @@ package server
 import (
 	"net/http"
 
+	"golang.org/x/exp/slog"
+
 	"github.com/nint8835/dieppe/pkg/config"
 )
 
@@ -12,12 +14,9 @@ type Server struct {
 }
 
 func (s *Server) Serve() error {
-	bindAddr := ":8080"
-	if s.config.Server != nil && s.config.Server.BindAddr != nil {
-		bindAddr = *s.config.Server.BindAddr
-	}
+	slog.Info("Starting Dieppe", "bind_addr", *s.config.Server.BindAddr)
 
-	return http.ListenAndServe(bindAddr, s.router)
+	return http.ListenAndServe(*s.config.Server.BindAddr, s.router)
 }
 
 func New(cfg *config.Config) *Server {
