@@ -1,18 +1,22 @@
 package cmd
 
 import (
-	"log"
 	"os"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/slog"
+
+	"github.com/nint8835/dieppe/pkg/config"
 )
 
 var logLevel string
 
+var cfgPath string
+var cfg *config.Config
+
 var rootCmd = &cobra.Command{
 	Use:   "dieppe",
-	Short: "Vanity URL proxy for Go packages and Docker images ",
+	Short: "Vanity URL proxy for Go packages and Docker images",
 }
 
 func Execute() {
@@ -24,8 +28,10 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initLogging)
+	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "debug", "level to use for logging")
+	rootCmd.PersistentFlags().StringVar(&cfgPath, "config", "dieppe.hcl", "path to load config from")
 }
 
 func initLogging() {
@@ -39,10 +45,20 @@ func initLogging() {
 	level, levelValid := logLevelMap[logLevel]
 
 	if !levelValid {
-		log.Fatalf("invalid log level: %s", logLevel)
+		slog.Error("invalid log level", "level", logLevel)
+		os.Exit(1)
 	}
 
 	logger := slog.HandlerOptions{Level: level}.NewTextHandler(os.Stderr)
 
 	slog.SetDefault(slog.New(logger))
+}
+
+func initConfig() {
+	var err error
+	cfg, err = config.Parse(cfgPath)
+	if err != nil {
+		slog.Error("failed to parse config", "err", err)
+		os.Exit(1)
+	}
 }
