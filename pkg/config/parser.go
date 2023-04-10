@@ -11,8 +11,7 @@ import (
 	"github.com/hashicorp/hcl/v2/hclparse"
 )
 
-// ParseFiles parses the config contained within a collection of files.
-func ParseFiles(paths []string) (*Config, error) {
+func parseFiles(paths []string) (*Config, error) {
 	parser := hclparse.NewParser()
 
 	var hclFiles []*hcl.File
@@ -40,11 +39,12 @@ func ParseFiles(paths []string) (*Config, error) {
 		return nil, diags
 	}
 
+	populateDefaults(&configFile)
+
 	return &configFile, nil
 }
 
-// ParseDir parses all config files in a given directory.
-func ParseDir(dirPath string) (*Config, error) {
+func parseDir(dirPath string) (*Config, error) {
 	dirEntries, err := os.ReadDir(dirPath)
 	if err != nil {
 		return nil, fmt.Errorf("error listing directory: %w", err)
@@ -63,7 +63,18 @@ func ParseDir(dirPath string) (*Config, error) {
 		filePaths = append(filePaths, path.Join(dirPath, dirEntry.Name()))
 	}
 
-	return ParseFiles(filePaths)
+	return parseFiles(filePaths)
+}
+
+func populateDefaults(config *Config) {
+	if config.Server == nil {
+		config.Server = &Server{}
+	}
+
+	if config.Server.BindAddr == nil {
+		config.Server.BindAddr = new(string)
+		*config.Server.BindAddr = ":8080"
+	}
 }
 
 // Parse parses the config at a given path.
@@ -75,8 +86,8 @@ func Parse(cfgPath string) (*Config, error) {
 	}
 
 	if fileInfo.IsDir() {
-		return ParseDir(cfgPath)
+		return parseDir(cfgPath)
 	}
 
-	return ParseFiles([]string{cfgPath})
+	return parseFiles([]string{cfgPath})
 }
