@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
+	"golang.org/x/term"
 )
 
 // HCLParseError occurs when an error is encountered while parsing HCL.
@@ -17,14 +18,20 @@ import (
 var HCLParseError = errors.New("failed to parse config")
 
 func parseFiles(paths []string) (*Config, error) {
+	isTerminal := term.IsTerminal(int(os.Stderr.Fd()))
+	width, _, err := term.GetSize(int(os.Stderr.Fd()))
+	if err != nil {
+		width = 80
+	}
+
 	parser := hclparse.NewParser()
 
 	var hclFiles []*hcl.File
 
 	for _, filePath := range paths {
 		hclFile, diags := parser.ParseHCLFile(filePath)
-		//TODO: detect width, disable colour for non-tty
-		wr := hcl.NewDiagnosticTextWriter(os.Stderr, parser.Files(), 80, true)
+
+		wr := hcl.NewDiagnosticTextWriter(os.Stderr, parser.Files(), uint(width), isTerminal)
 		if diags.HasErrors() {
 			wr.WriteDiagnostics(diags)
 			return nil, HCLParseError
@@ -35,8 +42,7 @@ func parseFiles(paths []string) (*Config, error) {
 
 	mergedFile := hcl.MergeFiles(hclFiles)
 
-	//TODO: detect width, disable colour for non-tty
-	wr := hcl.NewDiagnosticTextWriter(os.Stderr, parser.Files(), 80, true)
+	wr := hcl.NewDiagnosticTextWriter(os.Stderr, parser.Files(), uint(width), isTerminal)
 
 	var configFile Config
 	if diags := gohcl.DecodeBody(mergedFile, nil, &configFile); diags.HasErrors() {
