@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"log"
 	"os"
 
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/slog"
 )
 
 var logLevel string
@@ -29,12 +29,20 @@ func init() {
 }
 
 func initLogging() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-
-	parsedLogLevel, err := zerolog.ParseLevel(logLevel)
-	if err != nil {
-		log.Error().Err(err).Msg("Error parsing log level")
-		os.Exit(1)
+	logLevelMap := map[string]slog.Level{
+		"debug": slog.LevelDebug,
+		"info":  slog.LevelInfo,
+		"warn":  slog.LevelWarn,
+		"error": slog.LevelError,
 	}
-	zerolog.SetGlobalLevel(parsedLogLevel)
+
+	level, levelValid := logLevelMap[logLevel]
+
+	if !levelValid {
+		log.Fatalf("invalid log level: %s", logLevel)
+	}
+
+	logger := slog.HandlerOptions{Level: level}.NewTextHandler(os.Stderr)
+
+	slog.SetDefault(slog.New(logger))
 }
