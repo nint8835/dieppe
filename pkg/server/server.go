@@ -6,6 +6,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/nint8835/dieppe/pkg/config"
+	"github.com/nint8835/dieppe/pkg/server/proxies/go"
 )
 
 type Server struct {
@@ -21,6 +22,8 @@ func (s *Server) Serve() error {
 
 func New(cfg *config.Config) *Server {
 	mux := http.NewServeMux()
+
+	goproxy.Register(cfg, mux)
 
 	return &Server{
 		router: mux,

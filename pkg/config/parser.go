@@ -78,10 +78,6 @@ func parseDir(dirPath string) (*Config, error) {
 }
 
 func populateDefaults(config *Config) {
-	if config.Server == nil {
-		config.Server = &Server{}
-	}
-
 	if config.Server.BindAddr == nil {
 		config.Server.BindAddr = new(string)
 		*config.Server.BindAddr = ":8080"
