@@ -7,9 +7,10 @@ type Server struct {
 }
 
 type GoModule struct {
-	ID       string `hcl:",label"`
-	Path     string `hcl:"path"`
-	Upstream string `hcl:"upstream"`
+	ID       string  `hcl:",label"`
+	Path     string  `hcl:"path"`
+	Upstream string  `hcl:"upstream"`
+	VCSType  *string `hcl:"vcs_type"`
 }
 
 func (m *GoModule) ImportPath(s *Server) string {
@@ -18,7 +19,7 @@ func (m *GoModule) ImportPath(s *Server) string {
 
 // Config is the top-level configuration structure.
 type Config struct {
-	Server Server `hcl:"server,block"`
+	Server *Server `hcl:"server,block"`
 
-	GoModules []GoModule `hcl:"go_module,block"`
+	GoModules []*GoModule `hcl:"go_module,block"`
 }

@@ -82,6 +82,13 @@ func populateDefaults(config *Config) {
 		config.Server.BindAddr = new(string)
 		*config.Server.BindAddr = ":80"
 	}
+
+	for _, goModule := range config.GoModules {
+		if goModule.VCSType == nil {
+			goModule.VCSType = new(string)
+			*goModule.VCSType = "git"
+		}
+	}
 }
 
 // Parse parses the config at a given path.

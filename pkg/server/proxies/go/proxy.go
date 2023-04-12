@@ -28,8 +28,8 @@ type GoProxy struct {
 
 func (p *GoProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_ = respTmpl.Execute(w, proxyRespCtx{
-		ImportPath:  p.module.ImportPath(&p.config.Server),
-		VCSType:     "git",
+		ImportPath:  p.module.ImportPath(p.config.Server),
+		VCSType:     *p.module.VCSType,
 		UpstreamURL: p.module.Upstream,
 	})
 }
@@ -38,7 +38,7 @@ func Register(cfg *config.Config, mux *http.ServeMux) {
 	for _, module := range cfg.GoModules {
 		proxy := &GoProxy{
 			config: cfg,
-			module: &module,
+			module: module,
 		}
 
 		proxyPath := "/" + module.Path
