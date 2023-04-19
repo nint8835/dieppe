@@ -12,3 +12,8 @@ go_module "sorik/borik" {
   path     = "sorik/borik"
   upstream = "https://github.com/fogo-sh/borik"
 }
+
+go_module "testing" {
+  path     = "testing"
+  upstream = "https://github.com/nint8835/dieppe-sandbox"
+}
