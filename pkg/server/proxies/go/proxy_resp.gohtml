@@ -1,6 +1,46 @@
 {{- /*gotype: github.com/nint8835/dieppe/pkg/server/proxies/go.proxyRespCtx*/ -}}
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta name="go-import" content="{{ .ImportPath}} {{.VCSType}} {{ .UpstreamURL }}">
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+        <title>{{ .Module.DisplayName }}</title>
+
+        <style>
+            body {
+                padding: 2rem;
+                margin: 0;
+                background-color: #303030;
+                color: #dddddd;
+                font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+            }
+
+            pre {
+                background-color: #202020;
+                padding: 1rem;
+                border-radius: 0.25rem;
+            }
+
+            a {
+                color: inherit;
+            }
+        </style>
     </head>
+    <body>
+        <h1>{{ .Module.DisplayName }}</h1>
+        {{ .Description }}
+        {{ if .Module.Links }}
+            <h2>Links</h2>
+            <div class="links-ul">
+                <ul>
+                    {{ range $link := .Module.Links }}
+                        <li><a href="{{ $link.URL }}">{{ $link.Text }}</a></li>
+                    {{ end }}
+                </ul>
+            </div>
+        {{ end }}
+        <h2>Installation</h2>
+        <pre>go get {{ .ImportPath }}</pre>
+    </body>
 </html>

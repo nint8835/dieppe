@@ -1,10 +1,12 @@
 package goproxy
 
 import (
+	"bytes"
 	_ "embed"
 	"html/template"
 	"net/http"
 
+	"github.com/yuin/goldmark"
 	"golang.org/x/exp/slog"
 
 	"github.com/nint8835/dieppe/pkg/config"
@@ -14,6 +16,8 @@ type proxyRespCtx struct {
 	ImportPath  string
 	VCSType     string
 	UpstreamURL string
+	Description template.HTML
+	Module      *config.GoModule
 }
 
 //go:embed proxy_resp.gohtml
@@ -27,10 +31,19 @@ type GoProxy struct {
 }
 
 func (p *GoProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var descBody bytes.Buffer
+
+	if err := goldmark.Convert([]byte(*p.module.Description), &descBody); err != nil {
+		slog.Error("Failed to render module description", "module", p.module.ID, "error", err)
+		descBody.Reset()
+	}
+
 	_ = respTmpl.Execute(w, proxyRespCtx{
 		ImportPath:  p.module.ImportPath(p.config.Server),
 		VCSType:     *p.module.VCSType,
 		UpstreamURL: p.module.Upstream,
+		Description: template.HTML(descBody.String()),
+		Module:      p.module,
 	})
 }
 

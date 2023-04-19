@@ -88,6 +88,14 @@ func populateDefaults(config *Config) {
 			goModule.VCSType = new(string)
 			*goModule.VCSType = "git"
 		}
+		if goModule.Description == nil {
+			goModule.Description = new(string)
+			*goModule.Description = ""
+		}
+		if goModule.DisplayName == nil {
+			goModule.DisplayName = new(string)
+			*goModule.DisplayName = goModule.ImportPath(config.Server)
+		}
 	}
 }
 

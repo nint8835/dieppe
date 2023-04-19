@@ -6,11 +6,22 @@ type Server struct {
 	BindAddr *string `hcl:"bind_addr"`
 }
 
+// Link defines a link to be displayed on a package's page.
+type Link struct {
+	Text string `hcl:"text"`
+	URL  string `hcl:"url"`
+}
+
+// GoModule defines a Go module that should be proxied.
 type GoModule struct {
-	ID       string  `hcl:",label"`
-	Path     string  `hcl:"path"`
-	Upstream string  `hcl:"upstream"`
-	VCSType  *string `hcl:"vcs_type"`
+	ID          string  `hcl:",label"`
+	DisplayName *string `hcl:"display_name"`
+	Path        string  `hcl:"path"`
+	Upstream    string  `hcl:"upstream"`
+	VCSType     *string `hcl:"vcs_type"`
+
+	Description *string `hcl:"description"`
+	Links       []Link  `hcl:"link,block"`
 }
 
 func (m *GoModule) ImportPath(s *Server) string {

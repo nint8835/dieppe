@@ -6,6 +6,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.16.2
 	github.com/k0kubun/pp/v3 v3.2.0
 	github.com/spf13/cobra v1.7.0
+	github.com/yuin/goldmark v1.5.4
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
 	golang.org/x/term v0.7.0
 )
