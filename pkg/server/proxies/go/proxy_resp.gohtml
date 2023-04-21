@@ -32,13 +32,11 @@
         {{ .Description }}
         {{ if .Module.Links }}
             <h2>Links</h2>
-            <div class="links-ul">
-                <ul>
-                    {{ range $link := .Module.Links }}
-                        <li><a href="{{ $link.URL }}">{{ $link.Text }}</a></li>
-                    {{ end }}
-                </ul>
-            </div>
+            <ul>
+                {{ range $link := .Module.Links }}
+                    <li><a href="{{ $link.URL }}">{{ $link.Text }}</a></li>
+                {{ end }}
+            </ul>
         {{ end }}
         <h2>Installation</h2>
         <pre>go get {{ .ImportPath }}</pre>
