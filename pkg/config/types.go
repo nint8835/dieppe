@@ -16,12 +16,13 @@ type Link struct {
 type GoModule struct {
 	ID          string  `hcl:",label"`
 	DisplayName *string `hcl:"display_name"`
+	Description string  `hcl:"description,optional"`
 	Path        string  `hcl:"path"`
 	Upstream    string  `hcl:"upstream"`
 	VCSType     *string `hcl:"vcs_type"`
 
-	Description *string `hcl:"description"`
-	Links       []Link  `hcl:"link,block"`
+	Readme string `hcl:"readme,optional"`
+	Links  []Link `hcl:"link,block"`
 }
 
 func (m *GoModule) ImportPath(s *Server) string {

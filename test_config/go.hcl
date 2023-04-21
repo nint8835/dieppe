@@ -9,16 +9,18 @@ go_module "sorik" {
 }
 
 go_module "sorik/borik" {
-  path     = "sorik/borik"
-  upstream = "https://github.com/fogo-sh/borik"
+  path        = "sorik/borik"
+  upstream    = "https://github.com/fogo-sh/borik"
+  description = "Best discord bot"
 }
 
 go_module "testing" {
   path         = "testing"
   upstream     = "https://github.com/nint8835/dieppe-sandbox"
   display_name = "dieppe-sandbox"
+  description  = "Testing module for Dieppe"
 
-  description = <<EOF
+  readme = <<EOF
 Testing module for Dieppe.
 
 # H1

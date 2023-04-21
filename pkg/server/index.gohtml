@@ -1,11 +1,8 @@
-{{- /*gotype: github.com/nint8835/dieppe/pkg/server/proxies/go.proxyRespCtx*/ -}}
+{{- /*gotype: github.com/nint8835/dieppe/pkg/server.indexCtx*/ -}}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta name="go-import" content="{{ .ImportPath}} {{.VCSType}} {{ .UpstreamURL }}">
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-        <title>{{ .Module.DisplayName }}</title>
+        <title>Package Listing</title>
 
         <style>
             body {
@@ -28,17 +25,19 @@
         </style>
     </head>
     <body>
-        <h1>{{ .Module.DisplayName }}</h1>
-        {{ .Readme }}
-        {{ if .Module.Links }}
-            <h2>Links</h2>
+        <h1>Available Packages</h1>
+
+        {{ if .Config.GoModules }}
+            <h2>Go Modules</h2>
             <ul>
-                {{ range $link := .Module.Links }}
-                    <li><a href="{{ $link.URL }}">{{ $link.Text }}</a></li>
+                {{ range $mod := .Config.GoModules }}
+                    <li><a href="/{{ $mod.Path }}">{{ $mod.DisplayName }}</a>
+                    {{ if $mod.Description }}
+                        - {{ $mod.Description }}
+                    {{ end }}
+                    </li>
                 {{ end }}
             </ul>
         {{ end }}
-        <h2>Installation</h2>
-        <pre>go get {{ .ImportPath }}</pre>
     </body>
 </html>

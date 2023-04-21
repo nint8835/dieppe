@@ -1,6 +1,8 @@
 package server
 
 import (
+	_ "embed"
+	"html/template"
 	"net/http"
 
 	"golang.org/x/exp/slog"
@@ -8,6 +10,22 @@ import (
 	"github.com/nint8835/dieppe/pkg/config"
 	"github.com/nint8835/dieppe/pkg/server/proxies/go"
 )
+
+type indexCtx struct {
+	Config *config.Config
+}
+
+//go:embed index.gohtml
+var indexTmplBody string
+
+var indexTmpl = template.Must(template.New("index").Parse(indexTmplBody))
+
+func withBranding(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Server", "Dieppe")
+		handler.ServeHTTP(w, r)
+	})
+}
 
 func withLogging(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +48,13 @@ type Server struct {
 func (s *Server) Serve() error {
 	slog.Info("Starting Dieppe", "bind_addr", *s.config.Server.BindAddr)
 
-	return http.ListenAndServe(*s.config.Server.BindAddr, withLogging(s.router))
+	return http.ListenAndServe(*s.config.Server.BindAddr, withBranding(withLogging(s.router)))
+}
+
+func (s *Server) ServeIndex(w http.ResponseWriter, r *http.Request) {
+	_ = indexTmpl.Execute(w, indexCtx{
+		Config: s.config,
+	})
 }
 
 func New(cfg *config.Config) *Server {
@@ -38,8 +62,12 @@ func New(cfg *config.Config) *Server {
 
 	goproxy.Register(cfg, mux)
 
-	return &Server{
+	srv := &Server{
 		router: mux,
 		config: cfg,
 	}
+
+	mux.HandleFunc("/", srv.ServeIndex)
+
+	return srv
 }
