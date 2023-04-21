@@ -25,13 +25,13 @@ type GoModule struct {
 	Links  []Link `hcl:"link,block"`
 }
 
-func (m *GoModule) ImportPath(s *Server) string {
+func (m *GoModule) ImportPath(s Server) string {
 	return s.Host + "/" + m.Path
 }
 
 // Config is the top-level configuration structure.
 type Config struct {
-	Server *Server `hcl:"server,block"`
+	Server Server `hcl:"server,block"`
 
 	GoModules []*GoModule `hcl:"go_module,block"`
 }

@@ -26,7 +26,7 @@ func parseFiles(paths []string) (*Config, error) {
 
 	parser := hclparse.NewParser()
 
-	var hclFiles []*hcl.File
+	hclFiles := make([]*hcl.File, 0)
 
 	for _, filePath := range paths {
 		hclFile, diags := parser.ParseHCLFile(filePath)
