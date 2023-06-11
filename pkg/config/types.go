@@ -14,7 +14,7 @@ type Link struct {
 
 // GoModule defines a Go module that should be proxied.
 type GoModule struct {
-	ID          string  `hcl:",label"`
+	ID          string  `hcl:"id,label"`
 	DisplayName *string `hcl:"display_name"`
 	Description string  `hcl:"description,optional"`
 	Path        string  `hcl:"path"`
