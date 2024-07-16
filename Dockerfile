@@ -10,10 +10,9 @@ RUN mkdir /config
 COPY . .
 RUN CGO_ENABLED=0 go build -o dieppe
 
-FROM scratch
+FROM cgr.dev/chainguard/static
 
 COPY --from=builder /build/dieppe /dieppe
-# Need to copy the config directory as the scratch image doesn't have mkdir
 COPY --from=builder /config /config
 
 EXPOSE 80
