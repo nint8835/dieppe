@@ -15,7 +15,7 @@ FROM cgr.dev/chainguard/static
 COPY --from=builder /build/dieppe /dieppe
 COPY --from=builder /config /config
 
-EXPOSE 80
+EXPOSE 8000
 
 ENTRYPOINT ["/dieppe"]
 CMD ["start", "--config=/config"]
