@@ -1,8 +1,9 @@
 package cmd
 
 import (
+	"log/slog"
+
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/slog"
 
 	"github.com/nint8835/dieppe/pkg/server"
 )

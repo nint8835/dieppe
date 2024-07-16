@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"errors"
+	"log/slog"
 	"os"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/slog"
 
 	"github.com/nint8835/dieppe/pkg/config"
 )
@@ -50,9 +50,9 @@ func initLogging() {
 		os.Exit(1)
 	}
 
-	logger := slog.HandlerOptions{Level: level}.NewTextHandler(os.Stderr)
+	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: level}))
 
-	slog.SetDefault(slog.New(logger))
+	slog.SetDefault(logger)
 }
 
 func initConfig() {

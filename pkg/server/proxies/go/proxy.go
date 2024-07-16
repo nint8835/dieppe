@@ -4,10 +4,10 @@ import (
 	"bytes"
 	_ "embed"
 	"html/template"
+	"log/slog"
 	"net/http"
 
 	"github.com/yuin/goldmark"
-	"golang.org/x/exp/slog"
 
 	"github.com/nint8835/dieppe/pkg/config"
 )

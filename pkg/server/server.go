@@ -3,12 +3,11 @@ package server
 import (
 	_ "embed"
 	"html/template"
+	"log/slog"
 	"net/http"
 
-	"golang.org/x/exp/slog"
-
 	"github.com/nint8835/dieppe/pkg/config"
-	"github.com/nint8835/dieppe/pkg/server/proxies/go"
+	goproxy "github.com/nint8835/dieppe/pkg/server/proxies/go"
 )
 
 type indexCtx struct {
