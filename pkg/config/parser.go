@@ -80,7 +80,7 @@ func parseDir(dirPath string) (*Config, error) {
 func populateDefaults(config *Config) {
 	if config.Server.BindAddr == nil {
 		config.Server.BindAddr = new(string)
-		*config.Server.BindAddr = ":80"
+		*config.Server.BindAddr = ":8000"
 	}
 
 	for _, goModule := range config.GoModules {
